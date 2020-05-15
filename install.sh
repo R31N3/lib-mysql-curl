@@ -32,7 +32,7 @@ export LIBPATH=$(mysql_config --plugindir)
 make
 
 if test $? -ne 0; then
-	echo "ERROR: You need libmysqlclient development software installed "
+	echo "ERROR: You need libmysqlclient and curl development software installed "
 	echo "to be able to compile this UDF"
 	exit 1
 else
