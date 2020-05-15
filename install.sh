@@ -6,6 +6,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 echo "Compiling the MySQL UDF"
+export LIBPATH=$(mysql_config --plugindir)
 make
 
 if test $? -ne 0; then
