@@ -1,5 +1,5 @@
 .AppleDouble
 .dist
-.vscode
+.vscode*
 .DS_Store
 *.so
