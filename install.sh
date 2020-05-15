@@ -25,6 +25,7 @@ if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
+cd src
 
 echo "Compiling the MySQL UDF"
 export LIBPATH=$(mysql_config --plugindir)
