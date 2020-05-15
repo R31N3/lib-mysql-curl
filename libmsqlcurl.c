@@ -1,4 +1,4 @@
-#include "library.h"
+#include "libmsqlcurl.h"
 /* STANDARD is defined. Don't use any MySQL functions */
 #include <stdlib.h>
 #include <stdio.h>
