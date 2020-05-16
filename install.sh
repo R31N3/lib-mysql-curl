@@ -25,10 +25,14 @@ if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
+export LIBPATH=$(mysql_config --plugindir)
 cd src
 
+if [  -f $LIBPATH/libmsqlcurl.so ]; then
+    rm $LIBPATH/libmsqlcurl.so
+fi
+
 echo "Compiling the MySQL UDF"
-export LIBPATH=$(mysql_config --plugindir)
 make
 
 if test $? -ne 0; then

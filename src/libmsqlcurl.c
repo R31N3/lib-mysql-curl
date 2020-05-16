@@ -30,7 +30,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <curl/curl.h>
 #include "mysql.h"
 
-my_bool Send_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
+my_bool send_post_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
     if (args->arg_count != 2) {
         strcpy(message, "Send() requires two arguments");
         return 1;
@@ -44,7 +44,8 @@ my_bool Send_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
     return 0;
 }
 
-my_bool Send_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message) {
+my_bool send_post_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
 	if(initid->ptr){
 		free(initid->ptr);
 		initid->ptr = NULL;
@@ -52,7 +53,8 @@ my_bool Send_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message) {
     return 0;
 }
 
-long long Send(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
+long long send_post(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+{
 	curl_global_init(CURL_GLOBAL_ALL);
 	char* addr = args->args[0];
 	char* json = malloc(20);
