@@ -21,15 +21,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef UNTITLED2_LIBRARY_H
-#define UNTITLED2_LIBRARY_H
-#include <curl/curl.h>
-#include <mysql.h>
+DROP FUNCTION IF EXISTS send_post;
 
-my_bool Send_init(UDF_INIT*, UDF_ARGS*, char*);
-
-my_bool Send_deinit(UDF_INIT*, UDF_ARGS*, char*);
-
-long long Send(UDF_INIT*, UDF_ARGS*, char*, char*);
-
-#endif //UNTITLED2_LIBRARY_H
+CREATE FUNCTION send_post RETURNS integer SONAME 'libmsqlcurl.so';

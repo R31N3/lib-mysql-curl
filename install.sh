@@ -25,13 +25,18 @@ if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
+export LIBPATH=$(mysql_config --plugindir)
+cd src
+
+if [  -f $LIBPATH/libmsqlcurl.so ]; then
+    rm $LIBPATH/libmsqlcurl.so
+fi
 
 echo "Compiling the MySQL UDF"
-export LIBPATH=$(mysql_config --plugindir)
 make
 
 if test $? -ne 0; then
-	echo "ERROR: You need libmysqlclient development software installed "
+	echo "ERROR: You need libmysqlclient and curl development software installed "
 	echo "to be able to compile this UDF"
 	exit 1
 else
