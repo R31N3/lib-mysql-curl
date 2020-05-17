@@ -32,4 +32,8 @@ my_bool send_post_deinit(UDF_INIT *, UDF_ARGS *, char *);
 
 long long send_post(UDF_INIT *, UDF_ARGS *, char *, char *);
 
+void encapsulate_data(UDF_ARGS *, char **);
+
+void json_string(char *, char *, char *, enum Item_result, int);
+
 #endif //UNTITLED2_LIBRARY_H
