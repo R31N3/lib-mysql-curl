@@ -157,5 +157,5 @@ long long send_post(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error
     	*error = 1;
     }
     curl_global_cleanup();
-    return 1488;
+    return code;
 }
