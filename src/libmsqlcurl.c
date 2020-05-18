@@ -43,13 +43,9 @@ my_bool send_post_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
 
 long long send_post(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 {
-	CURLcode code = 1;
+	long long code = 0;
 	char method[] = "POST";
 	if (wrapup_request(args, method, &code))
-	{
-		*error = 1;
-	}
-	if (code)
 	{
 		*error = 1;
 	}
@@ -68,13 +64,9 @@ my_bool send_put_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
 
 long long send_put(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 {
-	CURLcode code = 1;
+	long long code = 0;
 	char method[] = "PUT";
 	if (wrapup_request(args, method, &code))
-	{
-		*error = 1;
-	}
-	if (code)
 	{
 		*error = 1;
 	}
@@ -93,13 +85,9 @@ my_bool send_delete_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
 
 long long send_delete(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 {
-	CURLcode code = 1;
+	long long code = 0;
 	char method[] = "DELETE";
 	if (wrapup_request(args, method, &code))
-	{
-		*error = 1;
-	}
-	if (code)
 	{
 		*error = 1;
 	}
@@ -213,7 +201,7 @@ void encapsulate_data(UDF_ARGS* udf_args, char** res_str)
 	(*res_str)[res_len + 2] = '\0';
 }
 
-int wrapup_request(UDF_ARGS *args, const char *method, CURLcode *code)
+int wrapup_request(UDF_ARGS *args, const char *method, long long *response_code)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	CURL *handle = curl_easy_init();
@@ -234,7 +222,11 @@ int wrapup_request(UDF_ARGS *args, const char *method, CURLcode *code)
 	{
 		return 1;
 	}
-	*code = curl_easy_perform(handle);
+	if(curl_easy_perform(handle))
+	{
+		return 1;
+	}
+	curl_easy_getinfo(handle, CURLINFO_RESPONSE_CODE, response_code);
 	curl_global_cleanup();
 	return 0;
 }

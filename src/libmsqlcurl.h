@@ -48,7 +48,7 @@ my_bool wrapped_init(UDF_INIT *, UDF_ARGS *, char *);
 
 my_bool wrapped_deinit(UDF_INIT *, UDF_ARGS *, char *);
 
-int wrapup_request(UDF_ARGS *, const char *, CURLcode *);
+int wrapup_request(UDF_ARGS *, const char *, long long *);
 
 void encapsulate_data(UDF_ARGS *, char **);
 
