@@ -158,12 +158,12 @@ void json_string(char *res_str, char *attr_name, char *arg, enum Item_result arg
 
 void encapsulate_data(UDF_ARGS* udf_args, char** res_str)
 {
-	unsigned int num_of_args = udf_args->arg_count;
-	char **attributes = udf_args->attributes;
-	unsigned long *lengths = udf_args->lengths;
-	unsigned long *attribute_lengths = udf_args->attribute_lengths;
-	char **args = udf_args->args;
-	enum Item_result *arg_types = udf_args->arg_type;
+	unsigned int num_of_args = udf_args->arg_count - 1;
+	char **attributes = udf_args->attributes + 1;
+	unsigned long *lengths = udf_args->lengths + 1;
+	unsigned long *attribute_lengths = udf_args->attribute_lengths + 1;
+	char **args = udf_args->args + 1;
+	enum Item_result *arg_types = udf_args->arg_type + 1;
 	char **char_args = (char **)calloc(num_of_args, sizeof(char *));
 	unsigned long res_len = 0;
 	for(unsigned int i = 0; i < num_of_args - 1; i++)
