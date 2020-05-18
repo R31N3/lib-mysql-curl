@@ -21,8 +21,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef UNTITLED2_LIBRARY_H
-#define UNTITLED2_LIBRARY_H
+#ifndef LIBMYSQLCURL_LIBRARY_H
+#define LIBMYSQLCURL_LIBRARY_H
 #include <curl/curl.h>
 #include <mysql.h>
 
@@ -31,6 +31,24 @@ my_bool send_post_init(UDF_INIT *, UDF_ARGS *, char *);
 my_bool send_post_deinit(UDF_INIT *, UDF_ARGS *, char *);
 
 long long send_post(UDF_INIT *, UDF_ARGS *, char *, char *);
+
+my_bool send_put_init(UDF_INIT *, UDF_ARGS *, char *);
+
+my_bool send_put_deinit(UDF_INIT *, UDF_ARGS *, char *);
+
+long long send_put(UDF_INIT *, UDF_ARGS *, char *, char *);
+
+my_bool send_delete_init(UDF_INIT *, UDF_ARGS *, char *);
+
+my_bool send_delete_deinit(UDF_INIT *, UDF_ARGS *, char *);
+
+long long send_delete(UDF_INIT *, UDF_ARGS *, char *, char *);
+
+my_bool wrapped_init(UDF_INIT *, UDF_ARGS *, char *);
+
+my_bool wrapped_deinit(UDF_INIT *, UDF_ARGS *, char *);
+
+int wrapup_request(UDF_ARGS *, const char *, CURLcode *);
 
 void encapsulate_data(UDF_ARGS *, char **);
 
