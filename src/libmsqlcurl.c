@@ -28,29 +28,107 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <my_global.h>
 #include <curl/curl.h>
-#include "mysql.h"
+#include <mysql.h>
 #include <stdarg.h>
 
 my_bool send_post_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
-    if (args->arg_count < 2) {
-        strcpy(message, "Send() requires >=2 arguments");
-        return 1;
-    }
-    if (args->arg_type[0] != STRING_RESULT) {
-    	strcpy(message, "Send() requires [addr:string]");
-    	return 1;
-    }
-	return 0;
+	return wrapped_init(initid, args, message);
 }
 
 my_bool send_post_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
-	if(initid->ptr){
+	return wrapped_deinit(initid, args, message);
+}
+
+long long send_post(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+{
+	CURLcode code = 1;
+	char method[] = "POST";
+	if (wrapup_request(args, method, &code))
+	{
+		*error = 1;
+	}
+	if (code)
+	{
+		*error = 1;
+	}
+	return code;
+}
+
+my_bool send_put_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	return wrapped_init(initid, args, message);
+}
+
+my_bool send_put_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	return wrapped_deinit(initid, args, message);
+}
+
+long long send_put(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+{
+	CURLcode code = 1;
+	char method[] = "PUT";
+	if (wrapup_request(args, method, &code))
+	{
+		*error = 1;
+	}
+	if (code)
+	{
+		*error = 1;
+	}
+	return code;
+}
+
+my_bool send_delete_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	return wrapped_init(initid, args, message);
+}
+
+my_bool send_delete_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	return wrapped_deinit(initid, args, message);
+}
+
+long long send_delete(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+{
+	CURLcode code = 1;
+	char method[] = "DELETE";
+	if (wrapup_request(args, method, &code))
+	{
+		*error = 1;
+	}
+	if (code)
+	{
+		*error = 1;
+	}
+	return code;
+}
+
+my_bool wrapped_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	if (args->arg_count < 2)
+	{
+		strcpy(message, "Function requires >=2 arguments");
+		return 1;
+	}
+	if (args->arg_type[0] != STRING_RESULT)
+	{
+		strcpy(message, "Function requires [addr:string]");
+		return 1;
+	}
+	return 0;
+}
+
+my_bool wrapped_deinit(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+	if (initid->ptr)
+	{
 		free(initid->ptr);
 		initid->ptr = NULL;
 	}
-    return 0;
+	return 0;
 }
 
 void json_string(char *res_str, char *attr_name, char *arg, enum Item_result arg_type, int trail_com)
@@ -125,7 +203,8 @@ void encapsulate_data(UDF_ARGS* udf_args, char** res_str)
 	*res_str = (char *)calloc(res_len + 3, sizeof(char));
 	**res_str = '{';
 	unsigned long current_pos = 1;
-	for(int i = 0; i < num_of_args; i++){
+	for(int i = 0; i < num_of_args; i++)
+	{
 		strcpy((*res_str + current_pos), char_args[i]);
 		current_pos += strlen(char_args[i]);
 		free(char_args[i]);
@@ -134,28 +213,28 @@ void encapsulate_data(UDF_ARGS* udf_args, char** res_str)
 	(*res_str)[res_len + 2] = '\0';
 }
 
-long long send_post(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+int wrapup_request(UDF_ARGS *args, const char *method, CURLcode *code)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
-	char* addr = args->args[0];
-	char* json = NULL;
+	CURL *handle = curl_easy_init();
+	char *addr = args->args[0];
+	char *json = NULL;
 	encapsulate_data(args, &json);
-	if(json == NULL) {
-		*error = 1;
-		return 0;
+	if (json == NULL || handle == NULL)
+	{
+		return 1;
 	}
-	CURL* handle = curl_easy_init();
 	struct curl_slist *list = NULL;
 	list = curl_slist_append(list, "Content-Type: application/json");
-	list = curl_slist_append(list, "accept: application/json");
+	curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, method);
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, list);
-    curl_easy_setopt(handle, CURLOPT_URL, addr);
-    curl_easy_setopt(handle, CURLOPT_POSTFIELDS, json);
-    CURLcode code = curl_easy_perform(handle);
-    if(code != 0)
+	curl_easy_setopt(handle, CURLOPT_URL, addr);
+	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, json);
+	if(list == NULL)
 	{
-    	*error = 1;
-    }
-    curl_global_cleanup();
-    return code;
+		return 1;
+	}
+	*code = curl_easy_perform(handle);
+	curl_global_cleanup();
+	return 0;
 }
