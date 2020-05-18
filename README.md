@@ -22,8 +22,8 @@ sudo ./install.sh
 
 ### Usage
 
-``` sql
-SELECT send_post([<URL or IP with port>] as alias0, data1 as alias1, data2 as alias2, ...) FROM ...;
+``` text
+SELECT send_<post/put/delete>([<URL or IP with port>] as alias0, data1 as alias1, data2 as alias2, ...) FROM ...;
 ```
 
 Returns 0 per request if request was successfully delivered (but HTTP response code could be 4xx or 5xx)
