@@ -1,0 +1,18 @@
+CREATE TRIGGER project_create AFTER INSERT ON projects FOR EACH ROW SELECT send_post("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/project", NEW.id as redmine_project_id) INTO @x;
+CREATE TRIGGER project_update AFTER UPDATE ON projects FOR EACH ROW SELECT send_put("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/project", NEW.id as redmine_project_id) INTO @x;
+CREATE TRIGGER project_delete AFTER DELETE ON projects FOR EACH ROW SELECT send_delete("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/project", OLD.id as redmine_project_id) INTO @x;
+
+CREATE TRIGGER issue_create AFTER INSERT ON issues FOR EACH ROW SELECT send_post("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/issue", NEW.id as redmine_issue_id) INTO @x;
+CREATE TRIGGER issue_update AFTER UPDATE ON issues FOR EACH ROW SELECT send_put("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/issue", NEW.id as redmine_issue_id) INTO @x;
+CREATE TRIGGER issue_delete AFTER DELETE ON issues FOR EACH ROW SELECT send_delete("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/issue", OLD.id as redmine_issue_id) INTO @x;
+
+CREATE TRIGGER watcher_create AFTER INSERT ON watchers FOR EACH ROW SELECT send_post("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/watcher", NEW.watchable_id as redmine_issue_id, NEW.user_id as redmine_user_id) INTO @x;
+CREATE TRIGGER watcher_delete AFTER DELETE ON watchers FOR EACH ROW SELECT send_delete("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/watcher", OLD.watchable_id as redmine_issue_id, OLD.user_id as redmine_user_id) INTO @x;
+
+CREATE TRIGGER journal_create AFTER INSERT ON journals FOR EACH ROW SELECT send_post("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/journal", NEW.journalized_id as redmine_issue_id, NEW.id as redmine_journal_id) INTO @x;
+CREATE TRIGGER journal_update AFTER UPDATE ON journals FOR EACH ROW SELECT send_put("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/journal", NEW.journalized_id as redmine_issue_id, NEW.id as redmine_journal_id) INTO @x;
+CREATE TRIGGER journal_delete AFTER DELETE ON journals FOR EACH ROW SELECT send_delete("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/journal", OLD.journalized_id as redmine_issue_id, OLD.id as redmine_journal_id) INTO @x;
+
+CREATE TRIGGER time_entry_create AFTER INSERT ON time_entries FOR EACH ROW SELECT send_post("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/time_entry", NEW.issue_id as redmine_issue_id, NEW.id as redmine_time_entry_id, NEW.user_id as redmine_user_id) INTO @x;
+CREATE TRIGGER time_entry_update AFTER UPDATE ON time_entries FOR EACH ROW SELECT send_put("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/time_entry", NEW.issue_id as redmine_issue_id, NEW.id as redmine_time_entry_id, NEW.user_id as redmine_user_id) INTO @x;
+CREATE TRIGGER time_entry_delete AFTER DELETE ON time_entries FOR EACH ROW SELECT send_delete("http://devservices.newwheel.org:8083/api/kafka/redmine_notifications/time_entry", OLD.issue_id as redmine_issue_id, OLD.id as redmine_time_entry_id, OLD.user_id as redmine_user_id) INTO @x;
